@@ -19,38 +19,15 @@ const invoice = {
         }
     ]
 };
+
 const plays = {
 "hamlet": {"name": "hamlet", "type":"tragedy"},
 "as-like": {"name": "As you like it", "type":"comedy"},
 "othello": {"name": "Othello", "type":"tragedy"}
 };
 
-function statement(invoice, plays){
-let totalAmount = 0;  // 총 금액
-let volumeCredits = 0; // 포인트
-
-let result = `청구내역: (고객명: ${invoice.customer})\n`;
-const format = new Intl.NumberFormat("en-US", {
-    style:"currency",
-    currency: "USD",
-    minimumFractionDigits: 2
-}).format;
-
-for(let perf of invoice.performances){
-    const play = plays[perf.playID];
-    let thisAmount = amountFor(play, perf);
-    // 포인트 적립
-    volumeCredits += Math.max(perf.audience - 30, 0);
-    // 희극 관객 5명마다 추가 포인트 제공
-    if("comedy" === play.type) volumeCredits += Math.floor(perf.audience / 5);
-
-        // 청구 내역 출력
-result += `${play.name}: ${format(thisAmount/100)} (${perf.audience}석)\n`;
-totalAmount += thisAmount;
-}
-result += `총액: ${format(totalAmount/100)}\n`;
-result += `적립 포인트: ${volumeCredits}점\n`;
-return result;
+function playFor(performances){
+    return plays[performances.playID];
 }
 
 function amountFor(play, perf){
@@ -74,4 +51,32 @@ function amountFor(play, perf){
     } 
     return thisAmount;
 }
+
+function statement(invoice, plays){
+let totalAmount = 0;  // 총 금액
+let volumeCredits = 0; // 포인트
+
+let result = `청구내역: (고객명: ${invoice.customer})\n`;
+const format = new Intl.NumberFormat("en-US", {
+    style:"currency",
+    currency: "USD",
+    minimumFractionDigits: 2
+}).format;
+
+for(let perf of invoice.performances){
+    let thisAmount = amountFor(playFor(perf), perf);
+    // 포인트 적립
+    volumeCredits += Math.max(perf.audience - 30, 0);
+    // 희극 관객 5명마다 추가 포인트 제공
+    if("comedy" === playFor(perf).type) volumeCredits += Math.floor(perf.audience / 5);
+
+        // 청구 내역 출력
+result += `${playFor(perf).name}: ${format(thisAmount/100)} (${perf.audience}석)\n`;
+totalAmount += thisAmount;
+}
+result += `총액: ${format(totalAmount/100)}\n`;
+result += `적립 포인트: ${volumeCredits}점\n`;
+return result;
+}
+
 console.log(statement(invoice, plays));

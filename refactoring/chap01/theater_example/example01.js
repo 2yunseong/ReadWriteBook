@@ -77,17 +77,23 @@ function totalVolumeCredits() {
     return volumeCredits;
 }
 
+function totalAmounts(){
+    let totalAmount = 0;
+    for(let perf of invoice.performances){
+        totalAmount += amountFor(perf);
+    }
+    return totalAmount;
+}
+
 function statement(invoice, plays){
     let result = `청구내역: (고객명: ${invoice.customer})\n`;
-    let totalAmount = 0;  // 총 금액
+
 
     for(let perf of invoice.performances){
         result += `${playFor(perf).name}: ${usd(amountFor(perf))} (${perf.audience}석)\n`;
     }
     
-    for(let perf of invoice.performances){
-        totalAmount += amountFor(perf);
-    }
+    let totalAmount = totalAmounts();
 
     result += `총액: ${usd(totalAmount)}\n`;
     result += `적립 포인트: ${totalVolumeCredits()}점\n`;

@@ -78,21 +78,17 @@ function totalVolumeCredits() {
 }
 
 function statement(invoice, plays){
+    let result = `청구내역: (고객명: ${invoice.customer})\n`;
+    let totalAmount = 0;  // 총 금액
 
-let result = `청구내역: (고객명: ${invoice.customer})\n`;
+    for(let perf of invoice.performances){
+        result += `${playFor(perf).name}: ${usd(amountFor(perf))} (${perf.audience}석)\n`;
+        totalAmount += amountFor(perf);
+    }
 
-let totalAmount = 0;  // 총 금액
-for(let perf of invoice.performances){
-    result += `${playFor(perf).name}: ${usd(amountFor(perf))} (${perf.audience}석)\n`;
-    totalAmount += amountFor(perf);
-}
-
-let volumeCredits = totalVolumeCredits(); // 포인트
-
-
-result += `총액: ${usd(totalAmount)}\n`;
-result += `적립 포인트: ${volumeCredits}점\n`;
-return result;
+    result += `총액: ${usd(totalAmount)}\n`;
+    result += `적립 포인트: ${totalVolumeCredits()}점\n`;
+    return result;
 }
 
 console.log(statement(invoice, plays));

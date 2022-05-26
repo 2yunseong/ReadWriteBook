@@ -52,6 +52,15 @@ function amountFor(perf){
     return thisAmount;
 }
 
+function volumeCreditsFor(perf){
+    let result = 0;
+    result += Math.max(perf.audience - 30, 0);
+    // 희극 관객 5명마다 추가 포인트 제공
+    if("comedy" === playFor(perf).type)
+        result += Math.floor(perf.audience / 5);
+    return result;
+}
+
 function statement(invoice, plays){
 let totalAmount = 0;  // 총 금액
 let volumeCredits = 0; // 포인트
@@ -64,10 +73,7 @@ const format = new Intl.NumberFormat("en-US", {
 }).format;
 
 for(let perf of invoice.performances){
-    volumeCredits += Math.max(perf.audience - 30, 0);
-    // 희극 관객 5명마다 추가 포인트 제공
-    if("comedy" === playFor(perf).type) volumeCredits += Math.floor(perf.audience / 5);
-
+    volumeCredits = volumeCreditsFor(perf);
         // 청구 내역 출력
 result += `${playFor(perf).name}: ${format(amountFor(perf)/100)} (${perf.audience}석)\n`;
 totalAmount += amountFor(perf);

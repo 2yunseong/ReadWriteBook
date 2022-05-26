@@ -75,13 +75,16 @@ let volumeCredits = 0; // 포인트
 
 let result = `청구내역: (고객명: ${invoice.customer})\n`;
 
+// 청구 내역 출력
+for(let perf of invoice.performances){
+    result += `${playFor(perf).name}: ${usd(amountFor(perf))} (${perf.audience}석)\n`;
+    totalAmount += amountFor(perf);
+}
 
 for(let perf of invoice.performances){
     volumeCredits = volumeCreditsFor(perf);
-        // 청구 내역 출력
-result += `${playFor(perf).name}: ${usd(amountFor(perf))} (${perf.audience}석)\n`;
-totalAmount += amountFor(perf);
 }
+
 result += `총액: ${usd(totalAmount)}\n`;
 result += `적립 포인트: ${volumeCredits}점\n`;
 return result;

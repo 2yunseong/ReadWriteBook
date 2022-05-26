@@ -70,17 +70,16 @@ function usd(number) {
 }
 
 function statement(invoice, plays){
-let totalAmount = 0;  // 총 금액
-let volumeCredits = 0; // 포인트
 
 let result = `청구내역: (고객명: ${invoice.customer})\n`;
 
-// 청구 내역 출력
+let totalAmount = 0;  // 총 금액
 for(let perf of invoice.performances){
     result += `${playFor(perf).name}: ${usd(amountFor(perf))} (${perf.audience}석)\n`;
     totalAmount += amountFor(perf);
 }
 
+let volumeCredits = 0; // 포인트
 for(let perf of invoice.performances){
     volumeCredits = volumeCreditsFor(perf);
 }
